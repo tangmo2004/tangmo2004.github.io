@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <!-- Blocking JavaScript -->
+    <script>
+        $(function () {
+            $('head').load('head.html')
+            $('#header').load('header.html')
+
+        })
+    </script>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10 Local Storage</title>
+
+</head>
+
+<body onload="load_data()">
+    <div id="header"></div>
+
+    <div class="col-7 bg-light p-3 border mx-auto mt-5">
+        <button id="add_new_data"type="button" class="btn btn-info mb-3" onclick="add_new_data()">Add New Data</button>
+        <table id="tb1" class="table table-bordered border border-danger border border-3 table class table table-striped table-hover">
+            <thead>
+                <tr class="table-danger">
+                    <th scope="col">SID</th>
+                    <th scope="col">Sname</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+
+    
+    <script>
+
+        if (sessionStorage.getItem('user') == null) {
+            alert('กรุณา Login ก่อนเข้าใช้งาน')
+            location.href = 'login.html'
+
+        }
+
+
+
+        let sid = []
+        let sname = []
+        let phone = []
+        let tb1 = document.getElementById('tb1').getElementsByTagName('tbody')[0]
+        let row
+
+        function load_data() {
+            sid = JSON.parse(localStorage.getItem('sid'))
+            sname = JSON.parse(localStorage.getItem('sname'))
+            phone = JSON.parse(localStorage.getItem('phone'))
+
+            if (sid == null && sname == null && phone == null) {
+                sid = []
+                sname = []
+                pnone = []
+            }
+
+            tb1.innerHTML = ''
+
+            for (let i = 0; i < sid.length; i++) {
+                console.log('Hello')
+                row = tb1.insertRow()
+                row.insertCell().innerHTML = sid[i]
+                row.insertCell().innerHTML = sname[i]
+                row.insertCell().innerHTML = phone[i]
+                row.insertCell().innerHTML = '<button id="edit_data"type="button" class="btn btn-success" onclick="click_edit_data(' + i +')">Edit</button><button id="dalete_data" type="button" class="btn btn-warning"onclick="click_delete_data(' + i +')">Delete</button>'
+            }
+
+
+        }
+
+        function add_new_data() {
+            row = tb1.insertRow()
+            row.insertCell().innerHTML = '<input type="number" class="form-control" id="sid" placehlder="Input Student ID">'
+            row.insertCell().innerHTML = '<input type="text" class="form-control" id="sname" placehlder="Input Full Name">'
+            row.insertCell().innerHTML = '<input type="text" class="form-control" id="phone" placehlder="Input Phone Number">'
+            row.insertCell().innerHTML = '<button  id="save_data"type="button" class="btn btn-primary"onclick=" click_save_data()">Save</button> <button id="cancel_data"type="button" class="btn btn-danger"onclick="click_cancel_data() ">Cancel</button>'
+
+            document.getElementById('add_new_data').disabled = true
+           // document.getElementById('eait_data').ariaDisabled = true
+           // document.getElementById('delete_data').ariaDisabled = true
+
+           let btn_edit = document.querySelectorAll('#edit_data')
+            for (let i = 0; i <btn_length; i++) {
+                btn_edit[i].disabled = true
+                
+            }            
+        }
+
+        function click_save_data() {
+            if (document.getElementById('sid').value !== '' && 
+            document.getElementById('sname').value !== '' && 
+            document.getElementById('phone').value !== '' ) {
+            sid.push(document.getElementById('sid').value)
+            sname.push(document.getElementById('sname').value)
+            phone.push(document.getElementById('phone').value)
+
+            localStorage.setItem('sid',JSON.stringify(sid))
+            localStorage.setItem('sname',JSON.stringify(sname))
+            localStorage.setItem('phone',JSON.stringify(phone))
+
+            document.getElementById('add_new_data').ariaDisabled = false
+
+            load_data()
+            }else{
+                alert('กรุณาป้อนข้อมูลให้ครบ!!')
+            }
+
+        }
+        function click_cancel_data() {
+            //load_data()
+            tb1.deleteRow(tb1.rows.length - 1)
+            document.getElementById('add_new_data').disabled = false
+             
+            let btn_edit = document.querySelectorAll('#edit_data, #dalete_data')
+            for (let i = 0; i < btn_edit.length; i++) {
+                btn_edit[i].disabled = false
+            }
+        }
+        function click_delete_data(i) {
+
+         if(confirm('ต้องการลบข้อมูลใช่หรือไม่ ???')) {
+
+           sid.splice(i, 1)
+           sname.splice(i, 1)
+           phone.splice(i, 1)
+
+            localStorage.setItem('sid',JSON.stringify(sid))
+            localStorage.setItem('sname',JSON.stringify(sname))
+            localStorage.setItem('phone',JSON.stringify(phone))
+          
+            load_data()
+
+        }
+
+    }
+    function click_edit_data(i) {
+
+        tb1.rows[i].cells[0].innerHTML = '<input type="number" class="form-control" id="sid" value="' + sid[i] + '">'
+        tb1.rows[i].cells[1].innerHTML = '<input type="text" class="form-control" id="sname" value="' + sname[i] + '">'
+        tb1.rows[i].cells[2].innerHTML = '<input type="number" class="form-control" id="phone" value="' + phone[i] + '">'
+        tb1.rows[i].cells[3].innerHTML = '<button  id="save_edit"type="button" class="btn btn-primary"onclick=" click_save_edit(' + i + ')">Save</button> <button id="cancel_edit"type="button" class="btn btn-danger"onclick="click_cancel_edit(' + i + ') ">Cancel</button>'
+        
+    }
+
+    function click_save_edit(i) {
+
+        sid[i] = document.getElementById('sid').value
+        sname[i] = document.getElementById('sname').value
+        phone[i] = document.getElementById('phone').value
+
+
+        localStorage.setItem('sid',JSON.stringify(sid))
+        localStorage.setItem('sname',JSON.stringify(sname))
+        localStorage.setItem('phone',JSON.stringify(phone))
+
+        load_data()
+          
+    }
+      
+        function click_cancel_edit(i) {
+           // load_data()
+           tb1.rows[i].cells[0].innerHTML = sid[i]
+           tb1.rows[i].cells[1].innerHTML = sname[i]
+           tb1.rows[i].cells[2].innerHTML = phone[i]
+           tb1.rows[i].cells[3].innerHTML = '<button id="edit_data"type="button" class="btn btn-success" onclick="click_edit_data(' + i +')">Edit</button><button id="dalete_data" type="button" class="btn btn-warning"onclick="click_delete_data(' + i +')">Delete</button>'
+        }
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <!-- Blocking JavaScript -->
+    <script>
+        $(function () {
+            $('head').load('head.html')
+            $('#header').load('header.html')
+
+        })
+    </script>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10 Local Storage</title>
+
+</head>
+
+<body onload="load_data()">
+    <div id="header"></div>
+
+    <div class="col-5 bg-light p-3 border mx-auto mt-5">
+        <table id="tb1"
+            class="table table-bordered border border-danger border border-3 table class table table-striped table-hover ">
+            <thead>
+                <tr class="table-danger">
+                    <th scope="col">SID</th>
+                    <th scope="col">Sname</th>
+                    <th scope="col">Phone</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-5 bg-light p-3 border mx-auto mt-5">
+        <!-- <form> -->
+        <div class="mb-3">
+            <label class="form-label">SID</label>
+            <input type="number" class="form-control" id="sid">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Sname</label>
+            <input type="text" class="form-control" id="sname">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Phone</label>
+            <input type="number" class="form-control" id="phone">
+        </div>
+        <button type="submit" class="btn btn-primary" onclick="click_submit()">Submit</button>
+        <button type="reset" class="btn btn-warning">Reset</button>
+        <!-- </form> -->
+    </div>
+    <script>
+        let sid = []
+        let sname = []
+        let phone = []
+        let tb1 = document.getElementById('tb1').getElementsByTagName('tbody')[0]
+        let row
+
+        function load_data() {
+            sid = JSON.parse(localStorage.getItem('sid'))
+            sname = JSON.parse(localStorage.getItem('sname'))
+            phone = JSON.parse(localStorage.getItem('phone'))
+
+            if (sid == null && sname == null && phone == null) {
+                sid = []
+                sname = []
+                pnone = []
+            }
+
+            tb1.innerHTML = ''
+
+            for (let i = 0; i < sid.length; i++) {
+                console.log('Hello')
+                row = tb1.insertRow()
+                row.insertCell().innerHTML = sid[i]
+                row.insertCell().innerHTML = sname[i]
+                row.insertCell().innerHTML = phone[i]
+            }
+
+
+        }
+
+        function click_submit() {
+
+            if (document.getElementById('sid').value != '' &&
+                document.getElementById('sname').value != '' &&
+                document.getElementById('phone').value != '') {
+
+                sid.push(document.getElementById('sid').value)
+                sname.push(document.getElementById('sname').value)
+                phone.push(document.getElementById('phone').value)
+
+                localStorage.setItem('sid', JSON.stringify(sid))
+                localStorage.setItem('sname', JSON.stringify(sname))
+                localStorage.setItem('phone', JSON.stringify(phone))
+
+                document.getElementById('sid').value = null
+                document.getElementById('sname').value = null
+                document.getElementById('phone').value = null
+
+
+            } else {
+                alert('กรุณาป้อนข้อมูลให้ครบ !!')
+            }
+
+        }
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
